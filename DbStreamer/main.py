@@ -105,6 +105,63 @@ class DbStreamer:
         results = _cursor.fetchall()
         return results
 
+    def upvote_question(self, user_id, question_id):
+        sql1 = "insert into QuestionVotes (user_id, question_id) values (%s, %s);"
+        sql2 = "update Questions set upvotes = upvotes+1 where id = %s;"
+        val1 = (user_id, question_id)
+        val2 = (question_id)
+        _cursor = self.conn.cursor()
+        _cursor.execute(sql1, (val1))
+        _cursor.execute(sql2, (val2, ))
+        results = _cursor.fetchall()
+        return results
+
+    def upvote_answer(self, user_id, answer_id):
+        sql1 = "insert into AnswerVotes (user_id, answer_id) values (%s, %s);"
+        sql2 = "update Answers set upvotes = upvotes+1 where id = %s;"
+        val1 = (user_id, answer_id)
+        val2 = (answer_id)
+        _cursor = self.conn.cursor()
+        _cursor.execute(sql1, (val1))
+        _cursor.execute(sql2, (val2, ))
+        results = _cursor.fetchall()
+        return results
+
+    def search_question(self, title):
+        sql = """
+        select * from Questions
+        where title like concat("%", %s, "%");
+        """
+        val = (title)
+        _cursor = self.conn.cursor()
+        _cursor.execute(sql, (val, ))
+        results = _cursor.fetchall()
+        return results
+
+    def search_question_by_id(self, id):
+        sql = "select * from Questions where id = %s;"
+        val = (id)
+        _cursor = self.conn.cursor()
+        _cursor.execute(sql, (val, ))
+        results = _cursor.fetchall()
+        return results
+
+    def search_answers(self, id):
+        sql = "select * from Answers where question_id = %s order by upvotes DESC;"
+        val = (id)
+        _cursor = self.conn.cursor()
+        _cursor.execute(sql, (val, ))
+        results = _cursor.fetchall()
+        return results
+
+    def search_by_tag(self, tag):
+        sql = "select * from Tags where name = %s;"
+        val = (tag)
+        _cursor = self.conn.cursor()
+        _cursor.execute(sql, (val, ))
+        results = _cursor.fetchall()
+        return results
+
     def get_tables(self):
         sql = "SHOW TABLES;"
         _cursor = self.conn.cursor()

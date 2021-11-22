@@ -21,6 +21,7 @@ create table Questions(
     title varchar(200) unique not null,
     description varchar(2000) not null,
     user_id varchar(50),
+    upvotes int(10) unsigned default 0,
 
     foreign key (user_id) references Users(id)
 
@@ -35,6 +36,7 @@ create table Answers(
     description varchar(2000) not null,
     question_id int(10) unsigned not null,
     user_id varchar(50),
+    upvotes int(10) unsigned default 0,
     
     foreign key (user_id) references Users(id),
     foreign key (question_id) references Questions(id)
@@ -42,7 +44,7 @@ create table Answers(
 """)
 
 obj.run_my_query("""
--- QuestionVotes
+    -- QuestionVotes
 create table QuestionVotes(
     user_id varchar(50) not null,
     question_id int(10) unsigned not null,
